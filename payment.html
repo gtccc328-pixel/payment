@@ -1,82 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>付款選單</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #fefefe;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    .container {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 50vh; /* 只佔半個螢幕高度 */
-      background-color: #fffaf7;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 24px;
-      overflow-y: auto;
-    }
-    .menu-item {
-      display: flex;
-      align-items: center;
-      padding: 14px 18px;
-      margin-bottom: 16px;
-      background-color: #ffffff;
-      border-radius: 14px;
-      text-decoration: none;
-      color: #444;
-      font-size: 18px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      transition: background-color 0.2s ease;
-    }
-    .menu-item:hover {
-      background-color: #f0eae5;
-    }
-    .menu-item img {
-      width: 30px;
-      height: 30px;
-      margin-right: 14px;
-      border-radius: 8px;
-    }
-    .close-btn {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #e0dcd8;
-      border-radius: 10px;
-      font-size: 16px;
-      color: #333;
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇動作</title>
+    <style>
+        /* 基礎樣式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7; /* 淺灰色背景 */
+            text-align: center;
+        }
+
+        /* 標題樣式 */
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        /* 按鈕容器 */
+        .button-container {
+            display: flex;
+            gap: 20px; /* 按鈕間距 */
+        }
+
+        /* 按鈕樣式 */
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* "做" 按鈕 - 藍色 (類似 iOS 系統色) */
+        #do-button {
+            background-color: #007aff;
+            color: white;
+        }
+
+        /* "不做" 按鈕 - 灰色 (次要選項) */
+        #dont-do-button {
+            background-color: #e5e5ea;
+            color: #3c3c43;
+        }
+
+        /* 按鈕活躍 (按下) 狀態 */
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <a class="menu-item" href="shortcuts://run-shortcut?name=街口付款碼">
-      <img src="https://www.icloud.com/你的街口logo.png" alt="街口支付">
-      街口支付
-    </a>
-    <a class="menu-item" href="shortcuts://run-shortcut?name=玉山信用卡">
-      <img src="https://www.icloud.com/你的玉山logo.png" alt="玉山銀行信用卡">
-      玉山銀行信用卡
-    </a>
-    <a class="menu-item" href="shortcuts://run-shortcut?name=LinePay付款碼">
-      <img src="https://www.icloud.com/你的LinePaylogo.png" alt="LinePay">
-      LinePay
-    </a>
-    <a class="menu-item" href="shortcuts://run-shortcut?name=雲端發票開啟">
-      <img src="https://www.icloud.com/你的雲端發票logo.png" alt="雲端發票">
-      雲端發票
-    </a>
-    <a class="close-btn" href="shortcuts://">退出</a>
-  </div>
+
+    <h1>請選擇您的動作：</h1>
+    <div class="button-container" id="btn-container">
+        <button id="do-button" onclick="handleChoice('do')">做 (開啟 Google News)</button>
+        <button id="dont-do-button" onclick="handleChoice('dont')">不做 (開啟 YouTube App)</button>
+    </div>
+
+    <script>
+        // 此函式會呼叫一個特殊的 URL Scheme (shortcuts://success) 來將結果傳回給捷徑，這是最可靠的資料傳輸方式。
+        function handleChoice(choice) {
+            let resultText;
+            
+            if (choice === 'do') {
+                resultText = '做'; 
+            } else {
+                resultText = '不做';
+            }
+
+            // 1. 立即更新頁面，讓使用者知道點擊成功
+            document.body.innerHTML = '<h1>已選擇。請點擊「完成」繼續...</h1>';
+            
+            // 2. 呼叫 shortcuts://success 並將結果作為文字參數傳入
+            window.location.href = 'shortcuts://success?text=' + encodeURIComponent(resultText);
+
+            // 當使用者點擊 Web View 頂部的「完成」按鈕時，捷徑就會收到 resultText 的值。
+        }
+    </script>
+
 </body>
 </html>
